@@ -5,6 +5,7 @@ import App from './App';
 import './styles/navbar.css';
 import './styles/aboutme.css';
 import './styles/home.css';
+import './styles/camera.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));

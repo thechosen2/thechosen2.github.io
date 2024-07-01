@@ -4,7 +4,7 @@ import {Route, Routes, Router} from 'react-router-dom';
 import Navbar from './components/navbar';
 import Home from './pages/home';
 import Aboutme from './pages/aboutme';
-import Camera from './pages/camera';
+import Camera from './pages/camera.tsx';
 import Blogs from './pages/blogs';
 
 function App() {
