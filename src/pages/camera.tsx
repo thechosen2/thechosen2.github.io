@@ -3,6 +3,7 @@ import { useState } from "react";
 import Blog from "../components/blogmaker";
 import {Gallery} from "react-grid-gallery";
 import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { images, CustomImage } from "../components/images.ts";
 
 const slides = images.map(({ original, width, height }) => ({
