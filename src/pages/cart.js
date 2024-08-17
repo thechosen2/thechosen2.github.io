@@ -17,8 +17,10 @@ const Cart = (props) => {
   return (
     <div className="cart-container">
       <Markdown>{carttext}</Markdown>
-      <Post path={"cart.md"} name={"cart"}/>
-      <textarea id="cart-input" value={""} onChange={inputChange}></textarea>
+      <div id="cartimagediv">
+        <Post path={"cart.md"} name={"cart"}/>
+        <textarea id="cart-input" value={""} onChange={inputChange}></textarea>
+      </div>
     </div>
   )
 };

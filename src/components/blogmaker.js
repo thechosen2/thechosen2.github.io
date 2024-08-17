@@ -40,9 +40,10 @@ const Post = (props) => {
                     let height = getvalue(ele, "height");
                     let width = getvalue(ele, "width");
                     let radius = getvalue(ele, "radius");
+                    let id = getvalue(ele, "id");
                     radius = parseInt(radius);
                     s++;
-                    return (<img src={src} key={s} alt={"idk"} height={height} width={width} style={{borderRadius: radius}}/>);
+                    return (<img src={src} key={s} alt={"idk"} height={height} width={width} id={id} style={{borderRadius: radius}}/>);
                 }
                 else{
                     s++;
