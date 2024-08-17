@@ -38,7 +38,11 @@
   animation-duration: 0.5s;
   animation-fill-mode: forwards;
 }
+
 a{
   color:rgb(129, 179, 220);
   text-decoration: none;
+}
+::-webkit-scrollbar {
+  display: none;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import Blog from "../components/blogmaker";
+import Post from "../components/blogmaker";
 import {Gallery} from "react-grid-gallery";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -19,7 +19,7 @@ const Camera = (props) => {
 
   return (
     <div>
-      <Blog path={"camera.md"} name={"camera"}/>
+      <Post path={"camera.md"} name={"camera"}/>
       <div>
         <Gallery
           images={images}

@@ -1,0 +1,1 @@
+<img> src=(./assets/grocery-store.png) height=(350px) radius=(0px)

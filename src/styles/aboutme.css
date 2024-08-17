@@ -2,3 +2,9 @@
     margin: 0px;
     width: 100%;
 }
+.aboutme-blogstyle>h2{
+    margin:5px;
+}
+.aboutme-blogstyle>p{
+    margin:2px;
+}

@@ -2,7 +2,7 @@ import React from "react"
 import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
 
-const Blog = (props) => {
+const Post = (props) => {
     const [File, setFile] = useState("")
     const p = props.path;
     useEffect(() => {
@@ -38,10 +38,11 @@ const Blog = (props) => {
                 if(ele.search("<img>") !== -1){
                     let src = getvalue(ele, "src");
                     let height = getvalue(ele, "height");
+                    let width = getvalue(ele, "width");
                     let radius = getvalue(ele, "radius");
                     radius = parseInt(radius);
                     s++;
-                    return (<img src={src} key={s} alt={"idk"} height={height} style={{borderRadius: radius}}/>);
+                    return (<img src={src} key={s} alt={"idk"} height={height} width={width} style={{borderRadius: radius}}/>);
                 }
                 else{
                     s++;
@@ -56,4 +57,4 @@ const Blog = (props) => {
   )
 };
 
-export default Blog;
+export default Post;
