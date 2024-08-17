@@ -4,7 +4,7 @@ import Post from "../components/blogmaker";
 import { useEffect, useState } from "react";
 const Cart = (props) => {
   const inputChange = (e) => {
-    if(e.target.value === "http://localhost:3000/stuff"){
+    if(e.target.value === "https://thechosen2.github.io/stuff"){
       props.setstuffcount(props.stuffcount + 1);
     }
     else if(e.target.value === "stuff"){
