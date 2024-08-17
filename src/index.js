@@ -8,12 +8,12 @@ import './styles/home.css';
 import './styles/camera.css';
 import './styles/cart.css';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
+  <HashRouter>
     <App/>
-  </BrowserRouter> 
+  </HashRouter> 
 );
 
 // If you want to start measuring performance in your app, pass a function
