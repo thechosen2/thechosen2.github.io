@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[592],{592:(e,s,t)=>{e.exports=t.p+"static/media/cart.59c7eb693861f0c275fd.md"}}]);
