@@ -3,12 +3,15 @@ body, html{
 }
 .cart-container>h1{
     margin-top: 40px;
+    margin-bottom: 0px;
     height: 100%;
     overflow: none;
 }
+.cart-container>h2{
+    margin:0px;
+}
 #cart-input{
     z-index:4;
-    /* position: relative; */
     transform:translateX(-175px);
     height: 350px;
     width: 350px;
@@ -29,6 +32,40 @@ body, html{
 #cartimg{
     z-index:3;
     transform: translateX(175px);
+}
+
+#checkout-button {
+    background-color: black;
+    height: 50px; 
+    padding: 0 20px; 
+    color: white;
+    border-radius: 25px; 
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    border: none;
+    margin-top: 30px;
+    margin-left: 85%;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; 
+}
+
+#checkout-button:hover {
+    background-color: #333; 
+    transform: translateY(-2px); 
+}
+
+
+#checkout-button:focus {
+    outline: none; 
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); 
+}
+
+@media screen and (max-width: 700px) {
+    #checkout-button {
+        width: 80%; 
+        margin-left: 35px; 
+        margin-top: 20px; 
+    }
 }
 @media screen and (max-width: 700px) {
     #cartimg{

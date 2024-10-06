@@ -1,28 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Markdown from 'react-markdown';
 import Post from "../components/blogmaker";
-import { useEffect, useState } from "react";
+
 const Cart = (props) => {
   const inputChange = (e) => {
-    if(e.target.value === "https://thechosen2.github.io/#/stuff"){
+    const dynamicLink = `${window.location.origin}/#/stuff`;
+
+    if (e.target.value === dynamicLink) {
       props.setstuffcount(props.stuffcount + 1);
+      props.setstuffvisible(false);
     }
-    else if(e.target.value === "stuff"){
+    if (e.target.value === "stuff" && props.spanstuff) {
       props.setstuffcount(props.stuffcount + 1);
+      props.setspanvisible(false);
     }
-  }
-  let carttext = `# You have ${props.stuffcount} item(s).
-  ## Fill your cart with stuff.
-  `
+  };
+
+  const checkoutClick = (e) => {
+    if (props.stuffcount <= 2) {
+      alert("Please add more than 2 items to checkout.");
+    } else {
+      props.setcheckedout(true);
+    }
+  };
+
+  const selectedStuffHandler = (e) => {
+    props.setspanstuff(true);
+    console.log(props.spanstuff);
+  };
+
+  let carttext = `# You have ${props.stuffcount} item(s).`;
+
   return (
     <div className="cart-container">
       <Markdown>{carttext}</Markdown>
+      <span>
+        Fill your cart with {props.spanvisible && <span id={"stuff-span"} onDragStart={selectedStuffHandler} onDragEnd={selectedStuffHandler}>stuff</span>}.
+      </span>
       <div id="cartimagediv">
-        <Post path={"cart.md"} name={"cart"}/>
+        <Post path={"cart.md"} name={"cart"} />
         <textarea id="cart-input" value={""} onChange={inputChange}></textarea>
       </div>
+      <button id="checkout-button" onClick={checkoutClick}>Checkout</button>
     </div>
-  )
+  );
 };
 
 export default Cart;
