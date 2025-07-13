@@ -1,101 +1,92 @@
-import React from "react"
+import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useState, useEffect } from "react";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import "../styles/posts.css";
 
-const Post = (props) => {
-    const [File, setFile] = useState("")
-    const p = props.path;
-    console.log(p);
-    console.log("Class:", p.includes("blogs/") ? "blog-left-align" : "no-align");
-    useEffect(() => {
-        fetch(p)
-        .then((res) => res.text())
-        .then((text) => setFile(text))
-        .catch((err) => console.error("Error loading markdown:", err));
-    }, [p]);
-    const name = props.name;
-    let md = File;
-    function getvalue(ele, str){
-        let i = ele.search(str);
-        let firstindex = ele.indexOf("(", i);
-        let nextindex = ele.indexOf(")", firstindex+1);
-        let value = ele.substring(firstindex+1, nextindex);
-        return value;
-    }
+const Post = ({ path, name }) => {
+  const [content, setContent] = useState("");
 
-    function getelement(ele, str) {
-        let i = ele.search(str);
-        if (i === -1) return "";
-        let firstindex = ele.indexOf(">", i);
-        let nextindex = ele.indexOf("<", firstindex + 1);
-        return ele.substring(firstindex + 1, nextindex).trim();
-    }
+  useEffect(() => {
+    fetch(path)
+      .then((res) => res.text())
+      .then(setContent)
+      .catch((err) => console.error("Error loading markdown:", err));
+  }, [path]);
 
-    let li;
-    const title = getelement(File, "<title>");
-    const author = getelement(File, "<author>");
-    const date = getelement(File, "<date>");
+  const title = content.match(/<title>(.*?)<\/title>/)?.[1];
+  const author = content.match(/<author>(.*?)<\/author>/)?.[1];
+  const date = content.match(/<date>(.*?)<\/date>/)?.[1];
 
-    md = md.replace(/<title>.*?<\/title>/, "")
-                     .replace(/<author>.*?<\/author>/, "")
-                     .replace(/<date>.*?<\/date>/, "")
-                     .trim();
-    try{
-        li = md.split(/(\r\n)/);
-        // console.log(li);
+  let cleanContent = content
+    .replace(/<title>.*?<\/title>/, "")
+    .replace(/<author>.*?<\/author>/, "")
+    .replace(/<date>.*?<\/date>/, "")
+    .trim();
+
+  // Split content by lines for custom elements
+  const lines = cleanContent.split(/\r?\n/);
+
+  const getAttr = (str, attr) =>
+    str.includes(attr + "=")
+      ? str.match(new RegExp(`${attr}=\\((.*?)\\)`))?.[1]
+      : undefined;
+
+  let idx = 0;
+  const rendered = lines.map((line, i) => {
+    if (line.includes("<img>")) {
+      const src = getAttr(line, "src");
+      const height = getAttr(line, "height");
+      const width = getAttr(line, "width");
+      const id = getAttr(line, "id");
+      let radius = getAttr(line, "radius");
+      if (radius && !radius.includes("px")) radius += "px";
+      return (
+        <img
+            key={`img-${i}`}
+            src={src}
+            id={id}
+            height={height}
+            width={width}
+            alt=""
+            style={{
+                borderRadius: radius,
+                display: "inline",
+                margin: "1rem auto"
+            }}
+            />
+      );
+    } else if (line.includes("<br-space>")) {
+      return <div key={`br-space-${i}`} style={{ height: "1.5rem" }} />;
+    } else {
+      return (
+        <ReactMarkdown
+          key={`md-${i}`}
+          children={line}
+          skipHtml={false}
+          remarkPlugins={[remarkMath]}
+          rehypePlugins={[rehypeKatex]}
+          className={path.includes("blogs/") ? "blogpost-leftalign blogpost-container" : ""}
+        />
+      );
     }
-    catch(err){
-        li = [];
-    }
-    let s=0;
-    let breakct = 0;
+  });
+
   return (
     <div className={`${name}-blogstyle`}>
-        {p.includes("blogs/") && (
-                <div className="blog-header">
-                    <h1>{title}</h1>
-                    <p className="blog-meta">by <a href="/#/me" ><b>{author}</b></a> • <text style={{color: "rgb(161, 161, 161)"}}>{date}</text></p>
-                </div>
-            )}
-        {
-            li.map((ele)=> {
-                if(ele.search("<img>") !== -1){
-                    breakct = 0;
-                    let src = getvalue(ele, "src");
-                    let height = getvalue(ele, "height");
-                    let width = getvalue(ele, "width");
-                    let radius = getvalue(ele, "radius");
-                    let id = getvalue(ele, "id");
-                    radius = parseInt(radius);
-                    s++;
-                    return (<img src={src} key={s} alt={"idk"} height={height} width={width} id={id} style={{borderRadius: radius}}/>);
-                }
-                else if(ele.search("\r\n") !== -1 || ele === ""){
-                    if (breakct === 0){
-                        // console.log(ele, s);
-                        breakct = 1;
-                    }
-                    else{
-                        // console.log(ele, s);
-                        return (<br></br>);
-                    }
-                }
-                else{
-                    breakct = 0;
-                    s++;
-                    return (
-                        <ReactMarkdown key={s} children={ele.trim().toString()} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} className={p.includes("blogs/")? "blogpost-leftalign .blogpost-container" : ""}></ReactMarkdown>
-                    );
-                }
-                return (<></>);
-            })
-        }
+      {path.includes("blogs/") && (
+        <div className="blog-header">
+          <h1>{title}</h1>
+          <p className="blog-meta">
+            by <a href="/#/me"><b>{author}</b></a> •{" "}
+            <span style={{ color: "rgb(161, 161, 161)" }}>{date}</span>
+          </p>
+        </div>
+      )}
+      {rendered}
     </div>
-  )
+  );
 };
 
 export default Post;
