@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Home from './pages/home';
@@ -6,6 +6,7 @@ import Cart from './pages/cart';
 import Aboutme from './pages/aboutme';
 import Camera from './pages/camera.tsx';
 import Stuff from './pages/Stuff';
+import BlogPostPage from "./pages/BlogPostPage";
 import './App.css';
 
 function App() {
@@ -20,6 +21,26 @@ function App() {
       stuffcount: 0,
     };
   };
+  const handleKeyPress = useCallback((event) => {
+    if (event.key.toLowerCase() === 'r' && event.ctrlKey === true){
+      event.preventDefault();
+      alert("The website suggests you deal with the consequences of your actions. There is no refresh button in life.");
+    }
+    if (event.key.toLowerCase() === 'i' && event.ctrlKey === true && event.shiftKey === true){
+      event.preventDefault();
+      alert("umm hello?");
+    }
+    if (event.key.toLowerCase() === 'tab' && event.ctrlKey === true){
+      event.preventDefault();
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
 
   const [state, setState] = useState(initialState);
 
@@ -43,6 +64,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/me" element={<Aboutme />} />
           <Route path="/camera" element={<Camera />} />
+          <Route path="/stuff/blog/:slug" element={<BlogPostPage />} />
           {!checkedout && (
             <Route
               path="/cart"

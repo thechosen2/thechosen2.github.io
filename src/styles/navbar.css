@@ -8,16 +8,16 @@
   display: block;
   height: 64px;
   background-color: rgba(255, 255, 255, 0.162);
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
 }
 .navbar{
   z-index:1;
   width: 50%;
-  position: fixed;
-  right: 0px;
+  position:relative;
+  margin-left: 46vw !important;
   background-color: transparent;
-  right: 0px;
+  /* right: 0px; */
   font-family: 'inter';
   font-size: 20px;
   font-weight: bolder;

@@ -38,7 +38,7 @@ const Cart = (props) => {
         Fill your cart with {props.spanvisible && <span id={"stuff-span"} onDragStart={selectedStuffHandler} onDragEnd={selectedStuffHandler}>stuff</span>}.
       </span>
       <div id="cartimagediv">
-        <Post path={"cart.md"} name={"cart"} />
+        <Post path={"/markdowns/cart.md"} name={"cart"} />
         <textarea id="cart-input" value={""} onChange={inputChange}></textarea>
       </div>
       <button id="checkout-button" onClick={checkoutClick}>Checkout</button>

@@ -1,0 +1,20 @@
+.blogpost-container {
+  padding: 2rem;
+  max-width: 95vw;
+  margin: 0px;
+}
+.blog-h1{
+  margin: none;
+}
+.blogpost-leftalign{
+  align-items: left;
+  text-align: left;
+  max-width:95vw!important;
+}
+.blogpost-leftalign>p,h1,h2{
+  word-break:break-all;
+}
+
+.blog-header{
+  width:95vw!important;
+}

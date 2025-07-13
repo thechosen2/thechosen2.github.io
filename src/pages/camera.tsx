@@ -19,7 +19,7 @@ const Camera = (props) => {
 
   return (
     <div>
-      <Post path={"camera.md"} name={"camera"}/>
+      <Post path={"/markdowns/camera.md"} name={"camera"}/>
       <div>
         <Gallery
           images={images}

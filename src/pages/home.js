@@ -4,7 +4,7 @@ import Post from "../components/blogmaker";
 const Home = (props) => {
   return (
     <div className="home-container">
-        <Post path={"home.md"} name={"home"}/>
+        <Post path={"/markdowns/home.md"} name={"home"}/>
     </div>
   )
 };

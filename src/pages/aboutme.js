@@ -6,7 +6,7 @@ const Aboutme = (props) => {
   
   return (
     <div className="aboutme-container">
-      <Post path={"aboutme.md"} name={"aboutme"}/>
+      <Post path={"/markdowns/aboutme.md"} name={"aboutme"}/>
     </div>
   )
 };
