@@ -1,15 +1,17 @@
 {
   "files": {
     "main.css": "/static/css/main.786fcb65.css",
-    "main.js": "/static/js/main.b279cf00.js",
+    "main.js": "/static/js/main.bdc9dad9.js",
     "static/js/453.bb828c5d.chunk.js": "/static/js/453.bb828c5d.chunk.js",
     "static/media/7.JPG": "/static/media/7.d23643bbd0d12901975f.JPG",
     "static/media/2.png": "/static/media/2.1348f2087e4fb2e4425b.png",
     "static/media/1.png": "/static/media/1.4d0b6a7081b0f9f6e93f.png",
     "static/media/8.JPG": "/static/media/8.8c88c85072602e0fef1f.JPG",
     "static/media/14.JPG": "/static/media/14.f9f283c0ffbb3b6a7fc0.JPG",
+    "static/media/20.jpg": "/static/media/20.5e23789d2021bc6f7ec7.jpg",
     "static/media/10.JPG": "/static/media/10.aca43aa59b564357bfd6.JPG",
     "static/media/13.JPG": "/static/media/13.9715e2984b3475552e46.JPG",
+    "static/media/19.jpg": "/static/media/19.022265d3e89d6cb60a95.jpg",
     "static/media/5.JPG": "/static/media/5.7b884002ea2729bf276e.JPG",
     "static/media/12.png": "/static/media/12.b777855411afb5ec56df.png",
     "static/media/9.JPG": "/static/media/9.1a3159c7ef2a1ef1688a.JPG",
@@ -83,11 +85,11 @@
     "static/media/KaTeX_Size3-Regular.woff2": "/static/media/KaTeX_Size3-Regular.e1951519f6f0596f7356.woff2",
     "index.html": "/index.html",
     "main.786fcb65.css.map": "/static/css/main.786fcb65.css.map",
-    "main.b279cf00.js.map": "/static/js/main.b279cf00.js.map",
+    "main.bdc9dad9.js.map": "/static/js/main.bdc9dad9.js.map",
     "453.bb828c5d.chunk.js.map": "/static/js/453.bb828c5d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.786fcb65.css",
-    "static/js/main.b279cf00.js"
+    "static/js/main.bdc9dad9.js"
   ]
 }
