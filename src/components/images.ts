@@ -17,6 +17,8 @@ import img15 from "../assets/camera/15.png";
 import img16 from "../assets/camera/16.jpg";
 import img17 from "../assets/camera/17.jpg";
 import img18 from "../assets/camera/18.jpg";
+import img19 from "../assets/camera/19.jpg";
+import img20 from "../assets/camera/20.jpg";
 
 export interface CustomImage extends Image {
   original: string;
@@ -78,6 +80,12 @@ export const images: CustomImage[] = [
     caption: "Man on phone at Mt. Batur, Bali. 2024, Raw.",
   },
   {
+    src: img13,
+    original: img13,
+    tags: [],
+    caption: "[Diorama] Cars atop a Hill, Bali, tilt-shift. 2024, Raw.",
+  },
+  {
     src: img9,
     original: img9,
     tags: [],
@@ -88,18 +96,6 @@ export const images: CustomImage[] = [
     original: img10,
     tags: [],
     caption: "[Diorama] View from Mt. Batur, Bali, shot using a tilt-shift lens. 2024, Raw.",
-  },
-  {
-    src: img12,
-    original: img12,
-    tags: [],
-    caption: "Signage Pt. 2, Bali. 2024, Edited.",
-  },
-  {
-    src: img13,
-    original: img13,
-    tags: [],
-    caption: "[Diorama] Cars atop a Hill, Bali, tilt-shift. 2024, Raw.",
   },
   {
     src: img15,
@@ -120,10 +116,28 @@ export const images: CustomImage[] = [
     caption: "Typewriter at Raffles, Udaipur. 2021, Edited.",
   },
   {
+    src: img12,
+    original: img12,
+    tags: [],
+    caption: "Signage Pt. 2, Bali. 2024, Edited.",
+  },
+  {
     src: img14,
     original: img14,
     tags: [],
     caption: "Stilts on Mt. Batur, Bali. 2024, Raw.",
+  },
+  {
+    src: img19,
+    original: img19,
+    tags: [],
+    caption: "Sunrise from Mt. Batur through a Tilt-Shift lens, Bali. 2024, Raw.",
+  },
+  {
+    src: img20,
+    original: img20,
+    tags: [],
+    caption: "View from Mt. Batur, Bali. 2024, Raw.",
   },
   {
     src: img2,
