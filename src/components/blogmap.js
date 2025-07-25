@@ -4,6 +4,11 @@ const blogMap = {
   //   snippet: "Plotting the dynamics of a Single Electron Transistor under different gate and bias conditions",
   //   path: "/markdowns/blogs/post2.md",
   // },
+  // file1: {
+  //   title:"[File] Ideal Resume according to people↗",
+  //   snippet: "For all you whitespace avoidants out there",
+  //   path : "/assets/JokeResume.pdf",
+  // },
   post1: {
     title:"[Blog] How much wood could a woodchuck chuck REALLY?",
     snippet: "Answering an age old question",

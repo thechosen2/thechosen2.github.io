@@ -30,12 +30,6 @@ export const images: CustomImage[] = [
     caption: "Beach in Bali. 2024, Graded.",
   },
   {
-    src: img2,
-    original: img2,
-    tags: [],
-    caption: "Beach in Bali. 2024, Edited.",
-  },
-  {
     src: img3,
     original: img3,
     tags: [],
@@ -130,5 +124,11 @@ export const images: CustomImage[] = [
     original: img14,
     tags: [],
     caption: "Stilts on Mt. Batur, Bali. 2024, Raw.",
+  },
+  {
+    src: img2,
+    original: img2,
+    tags: [],
+    caption: "Beach in Bali. 2024, Edited.",
   },
 ];
