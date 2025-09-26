@@ -1,3 +1,8 @@
+@keyframes hoveringaction{
+  0% {color: black}
+  100% {color: rgb(129, 179, 220)}
+}
+
 .stuff-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -7,6 +12,7 @@
 
 .post-card {
   background: #ffffff!important;
+  color: #1f2937;
   border: 1px solid #e5e7eb!important;
   border-radius: 0.25rem!important;
   padding: 1.5rem!important;
@@ -23,8 +29,12 @@
 .post-title {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #1f2937;
   margin-bottom: 0.5rem;
+}
+.post-card:hover{
+  animation-name: hoveringaction;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
 }
 
 .post-snippet {

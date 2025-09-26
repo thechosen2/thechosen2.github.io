@@ -9,6 +9,11 @@ const blogMap = {
   //   snippet: "For all you whitespace avoidants out there",
   //   path : "/assets/JokeResume.pdf",
   // },
+  repo6: {
+    title: "[Repo] Standard-Cell Library for VLSI↗",
+    snippet: "Layout, Schematic, Simulation views for nand2_x1, buf_x1, dfxtp_x1 cells",
+    path: "https://github.com/segf4u1t-139/EE671_Course_Project_1"
+  },
   post1: {
     title:"[Blog] How much wood could a woodchuck chuck REALLY?",
     snippet: "Answering an age old question",
