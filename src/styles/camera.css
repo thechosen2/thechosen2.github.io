@@ -1,11 +1,24 @@
-#ReactGridGallery>div{
-    align-items:center;
+#ReactGridGallery > div {
+    align-items: center;
     justify-content: center;
 }
-h3{
-    margin:0px;
+
+h3 {
+    margin: 0px;
 }
-h6{
-    margin-top:3px;
-    margin-bottom:7px;
+h6 {
+    margin-top: 3px;
+    margin-bottom: 7px;
+}
+
+@media (max-width: 480px) {
+    #ReactGridGallery > div {
+        justify-content: center;
+        gap: 0rem;
+    }
+
+    #ReactGridGallery img {
+        max-width: 10%;
+        height: auto;
+    }
 }

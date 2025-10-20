@@ -46,3 +46,13 @@ a{
 ::-webkit-scrollbar {
   display: none;
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    font-size: clamp(16px, 4vw, 20px);
+  }
+
+  .navbar>a {
+    font-size: clamp(14px, 3.5vw, 18px);
+  }
+}
