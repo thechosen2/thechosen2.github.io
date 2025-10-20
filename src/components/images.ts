@@ -163,7 +163,7 @@ export const images: CustomImage[] = [
   },
   {
     src: img23,
-    original: img2,
+    original: img23,
     tags: [],
     caption: "Uluwatu Temple, Bali. 2024, Raw.",
   },
