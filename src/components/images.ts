@@ -19,6 +19,10 @@ import img17 from "../assets/camera/17.jpg";
 import img18 from "../assets/camera/18.jpg";
 import img19 from "../assets/camera/19.jpg";
 import img20 from "../assets/camera/20.jpg";
+import img21 from "../assets/camera/21.JPG";
+import img22 from "../assets/camera/22.JPG";
+import img23 from "../assets/camera/23.JPG";
+import img24 from "../assets/camera/24.JPG";
 
 export interface CustomImage extends Image {
   original: string;
@@ -144,5 +148,29 @@ export const images: CustomImage[] = [
     original: img2,
     tags: [],
     caption: "Beach in Bali. 2024, Edited.",
+  },
+  {
+    src: img21,
+    original: img21,
+    tags: [],
+    caption: "Street in Bali. 2024, Raw.",
+  },
+  {
+    src: img22,
+    original: img22,
+    tags: [],
+    caption: "Street in Bali: The Sequel. 2024, Raw.",
+  },
+  {
+    src: img23,
+    original: img2,
+    tags: [],
+    caption: "Uluwatu Temple, Bali. 2024, Raw.",
+  },
+  {
+    src: img24,
+    original: img24,
+    tags: [],
+    caption: "Uluwatu Temple. 2024, Raw.",
   },
 ];
