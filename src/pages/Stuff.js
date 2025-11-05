@@ -7,7 +7,7 @@ const Stuff = () => {
   return (
     <div className="stuff-container">
       {Object.entries(blogMap).map(([name, { title, snippet, path }]) => {
-        const isInternalPost = title.includes("[Post]") || title.includes("[Blog]");
+        const isInternalPost = title.includes("[Post]") || title.includes("[Blog]") || path.includes(".md");
 
         return isInternalPost ? (
           <Link to={`/stuff/blog/${name}`} className="post-card" key={name}>

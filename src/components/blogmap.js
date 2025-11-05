@@ -11,13 +11,13 @@ const blogMap = {
   // },
   repo7: {
     title: "some xv6 experiments↗",
-    snippet: "Process management, Memory management, Syscalls in xv6",
+    snippet: "Process management, Memory management, syscalls in xv6",
     path: "https://github.com/thechosen2/xv6",
   },
   repo6: {
     title: "standard-cell library for vlsi↗",
     snippet: "Layout, Schematic, Simulation views: nand2_x1, buf_x1, dfxtp_x1",
-    path: "https://github.com/segf4u1t-139/EE671_Course_Project_1",
+    path: "https://github.com/segf4u1t-139/EE671_Course_Project_1"
   },
   post1: {
     title:"how much wood could a woodchuck chuck REALLY?",
@@ -40,7 +40,7 @@ const blogMap = {
     path: "https://github.com/thechosen2/sos24",
   },
   repo3: {
-    title: "codewars 2024↗",
+    title: "codewars '24↗",
     snippet: "Pirate Game Algorithm, 2nd Place",
     path: "https://github.com/thechosen2/cw",
   },
