@@ -9,6 +9,11 @@ const blogMap = {
   //   snippet: "For all you whitespace avoidants out there",
   //   path : "/assets/JokeResume.pdf",
   // },
+  pdf1: {
+    title: "simulations and analysis of GaN-AlGaN hemts↗",
+    snippet: " using Silvaco TCAD and a review of SLCFET architectures",
+    path: "/assets/Report.pdf",
+  },
   repo7: {
     title: "some xv6 experiments↗",
     snippet: "Process management, Memory management, syscalls in xv6",

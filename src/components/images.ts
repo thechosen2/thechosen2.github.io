@@ -126,6 +126,12 @@ export const images: CustomImage[] = [
     caption: "Signage Pt. 2, Bali. 2024, Edited.",
   },
   {
+    src: img21,
+    original: img21,
+    tags: [],
+    caption: "Street in Bali. 2024, Raw.",
+  },
+  {
     src: img14,
     original: img14,
     tags: [],
@@ -144,18 +150,6 @@ export const images: CustomImage[] = [
     caption: "View from Mt. Batur, Bali. 2024, Raw.",
   },
   {
-    src: img2,
-    original: img2,
-    tags: [],
-    caption: "Beach in Bali. 2024, Edited.",
-  },
-  {
-    src: img21,
-    original: img21,
-    tags: [],
-    caption: "Street in Bali. 2024, Raw.",
-  },
-  {
     src: img22,
     original: img22,
     tags: [],
@@ -166,11 +160,5 @@ export const images: CustomImage[] = [
     original: img23,
     tags: [],
     caption: "Uluwatu Temple, Bali. 2024, Raw.",
-  },
-  {
-    src: img24,
-    original: img24,
-    tags: [],
-    caption: "Uluwatu Temple. 2024, Raw.",
   },
 ];
