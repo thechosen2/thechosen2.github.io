@@ -23,6 +23,7 @@ import img21 from "../assets/camera/21.JPG";
 import img22 from "../assets/camera/22.JPG";
 import img23 from "../assets/camera/23.JPG";
 import img24 from "../assets/camera/24.JPG";
+import img25 from "../assets/camera/25.jpg";
 
 export interface CustomImage extends Image {
   original: string;
@@ -160,5 +161,11 @@ export const images: CustomImage[] = [
     original: img23,
     tags: [],
     caption: "Uluwatu Temple, Bali. 2024, Raw.",
+  },
+  {
+    src: img25,
+    original: img25,
+    tags: [],
+    caption: "Devka Beach, Daman. 2025, Raw.",
   },
 ];
