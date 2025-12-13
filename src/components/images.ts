@@ -58,7 +58,7 @@ export const images: CustomImage[] = [
     src: img17,
     original: img17,
     tags: [],
-    caption: "Library at the Raffles hotel in Udaipur. 2021, Raw.",
+    caption: "A Library in Udaipur. 2021, Raw.",
   },
   {
     src: img11,
@@ -118,7 +118,7 @@ export const images: CustomImage[] = [
     src: img18,
     original: img18,
     tags: [],
-    caption: "Typewriter at Raffles, Udaipur. 2021, Edited.",
+    caption: "Typewriter at a Library, Udaipur. 2021, Edited.",
   },
   {
     src: img12,
