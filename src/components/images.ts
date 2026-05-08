@@ -24,6 +24,11 @@ import img22 from "../assets/camera/22.JPG";
 import img23 from "../assets/camera/23.JPG";
 import img24 from "../assets/camera/24.JPG";
 import img25 from "../assets/camera/25.jpg";
+import img26 from "../assets/camera/26.JPG";
+import img27 from "../assets/camera/27.JPG";
+import img28 from "../assets/camera/28.JPG";
+import img29 from "../assets/camera/29.JPG";
+
 
 export interface CustomImage extends Image {
   original: string;
@@ -167,5 +172,29 @@ export const images: CustomImage[] = [
     original: img25,
     tags: [],
     caption: "Devka Beach, Daman. 2025, Raw.",
+  },
+  {
+    src: img26,
+    original: img26,
+    tags: [],
+    caption: "Dhanaulti. 2026, Raw.",
+  },
+  {
+    src: img27,
+    original: img27,
+    tags: [],
+    caption: "Tibetan prayer flags at Dalai Hills. 2026, Raw.",
+  },
+  {
+    src: img28,
+    original: img28,
+    tags: [],
+    caption: "Tibetan prayer flags at Dalai Hills Pt. 2. 2026, Raw.",
+  },
+  {
+    src: img29,
+    original: img29,
+    tags: [],
+    caption: "George Everest's Estate. 2026, Raw.",
   },
 ];
