@@ -39,6 +39,11 @@ const blogMap = {
     snippet: "Android app to display a floating transparent lyrics overlay",
     path: "https://github.com/thechosen2/lyricsify",
   },
+  pdf2: {
+    title: "rc4 cipher↗",
+    snippet: "explanation and cryptanalysis",
+    path: "/assets/rc4.pdf",
+  },
   repo1: {
     title: "quantum computing↗",
     snippet: "An introductory dive into QIC (SoS'24)",
