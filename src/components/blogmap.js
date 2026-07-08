@@ -9,7 +9,12 @@ const blogMap = {
   //   snippet: "For all you whitespace avoidants out there",
   //   path : "/assets/JokeResume.pdf",
   // },
-  pdf1: {
+  pdf4: {
+    title: "noise-adapted QEC↗",
+    snippet: "for non-markovian noise channels",
+    path: "/assets/noise-adapted_qec.pdf",
+  },
+   pdf1: {
     title: "simulations and analysis of GaN-AlGaN hemts↗",
     snippet: " using Silvaco TCAD and a review of SLCFET architectures",
     path: "/assets/Report.pdf",
@@ -18,6 +23,11 @@ const blogMap = {
     title: "some xv6 experiments↗",
     snippet: "Process management, Memory management, syscalls in xv6",
     path: "https://github.com/thechosen2/xv6",
+  },
+  pdf3: {
+    title: "8-bit integer matrix ALU↗",
+    snippet: "based on systolic array architecture",
+    path: "/assets/Group_35.pdf"
   },
   repo6: {
     title: "standard-cell library for vlsi↗",
