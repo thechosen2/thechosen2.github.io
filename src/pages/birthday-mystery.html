@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BIRTHDLE</title>
+<meta name="description" content="A birthday mystery. Who, what, where?">
+
+<!-- Blocky face for the logotype only. Everything else is Courier.
+     Delete this link and it falls back to Impact. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Kaushan+Script&display=swap" rel="stylesheet">
+
+<style>
+/* =================================================================
+   1. TOKENS
+   ================================================================= */
+:root{
+  --paper:#fbfbf9;
+  --card:#fffdf5;
+  --ink:#000;
+  --crimson:#A30B37;
+  --shadow:#1dacd6;      /* the cyan button shadow */
+  --grey:#737373;
+  --tick:#56D18B;        /* grid tick */
+  --cross:#7964BD;       /* grid cross */
+  --tick-big:#2A8B70;    /* resolution tick */
+  --type:Courier,"Courier New",monospace;
+  --logo:"Archivo Black",Impact,Haettenschweiler,sans-serif;
+  --script:"Kaushan Script","Brush Script MT",cursive;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;font-family:var(--type);font-size:18px;line-height:1.7;
+  background:var(--paper);color:var(--ink);padding:1.5em 0 4em;
+}
+body.locked{overflow:hidden}
+
+/* ---- layout ----
+   Narrow: one column, in source order (story, grid, accusation).
+   Wide:   the story column sits left of centre and the grid floats in
+           its own column on the right, pinned as you scroll. */
+#layout{display:block}
+.col,#gridcol{max-width:600px;width:90%;margin:0 auto}
+#gridcol{margin-top:2.4em}
+
+@media only screen and (min-width:1120px){
+  #layout{
+    display:grid;
+    grid-template-columns:600px max-content;
+    column-gap:120px;
+    justify-content:center;
+    margin:0 auto;
+    align-items:start;
+  }
+  .col{width:100%;max-width:600px;margin:0}
+  .maintop{grid-column:1;grid-row:1}
+  .mainbottom{grid-column:1;grid-row:2}
+  #gridcol{
+    grid-column:2;grid-row:1 / span 2;
+    align-self:end;
+    position:sticky;top:auto;bottom:22px;
+    width:auto;max-width:none;margin:0;padding-top:.5em;
+  }
+}
+
+/* =================================================================
+   2. LOGOTYPE
+   ================================================================= */
+/* --ls is set by script so the wordmark fills the column whatever it says */
+#logo{--ls:88px;text-align:center;line-height:1;margin-bottom:.25em}
+#logo .word{
+  font-family:var(--logo);font-size:var(--ls);
+  color:var(--crimson);letter-spacing:-.01em;display:inline-block;
+}
+#logo .hat{
+  width:calc(var(--ls)*.62);height:calc(var(--ls)*.62);
+  display:inline-block;margin-left:calc(var(--ls)*-.5);vertical-align:top;
+  transform:translateY(-18%) rotate(-14deg);
+}
+#byline{
+  font-family:var(--script);
+  font-size:clamp(19px,3.3vw,30px);
+  text-align:center;color:var(--ink);
+  margin:.1em 0 1.1em;line-height:1.35;
+}
+#byline .nm,#byline a{
+  color:var(--ink);text-decoration:underline;
+  text-underline-offset:.14em;text-decoration-thickness:from-font;
+}
+
+/* case title and dateline, left aligned the way the original sets them */
+#title-head{
+  color:var(--crimson);font-weight:bold;
+  font-size:150%;line-height:1.25;letter-spacing:.02em;
+  text-align:left;max-width:none;margin:0 0 .1em;
+}
+#dateline{
+  color:var(--crimson);font-weight:bold;
+  font-size:92%;letter-spacing:.02em;
+  text-align:left;margin:0 0 1.7em;
+}
+
+/* =================================================================
+   3. NARRATIVE
+   ================================================================= */
+#intro p{margin:0 0 .9em}
+#intro .nm{font-weight:bold}
+
+/* =================================================================
+   4. THE DECK — face-down cards
+   ================================================================= */
+/* one card area, with the category switcher underneath */
+.tray{text-align:center;font-size:0;min-height:240px}
+.deck-tabs{
+  text-align:center;margin:1.4em 0 0;font-size:95%;
+  letter-spacing:.06em;line-height:2;
+}
+.deck-tabs a{
+  color:var(--crimson);font-weight:bold;text-decoration:underline;
+  cursor:pointer;padding:0 2px;
+}
+.deck-tabs a:not(.on){opacity:.45}
+.deck-tabs a:focus-visible{outline:3px solid var(--crimson);outline-offset:3px}
+.deck-tabs .dot{color:var(--crimson);font-weight:bold;padding:0 .5em}
+#deckRule{margin:1.6em 0 1.4em}
+#cluesLead{margin:0 0 .4em}
+#accusePreamble{margin:0 0 1.4em}
+.back{
+  display:inline-flex;align-items:center;justify-content:center;
+  vertical-align:top;
+  width:150px;height:222px;margin:9px;
+  background:var(--crimson);
+  border:6px solid var(--ink);border-radius:9px;
+  cursor:pointer;padding:0;
+  transition:transform .15s;
+}
+.back:hover,.back:focus-visible{transform:translateY(-4px)}
+.back:focus-visible{outline:4px solid var(--shadow);outline-offset:3px}
+.back svg{width:60%;height:auto;display:block}
+
+/* =================================================================
+   5. OPEN CARD — full-screen takeover
+   ================================================================= */
+#overlay{
+  position:fixed;inset:0;background:var(--paper);
+  display:none;overflow-y:auto;z-index:50;
+  padding:24px 16px 40px;
+}
+#overlay.show{display:block}
+.bigcard{
+  width:min(92vw,340px);margin:0 auto;
+  background:var(--card);
+  border:7px solid var(--ink);border-radius:10px;
+  padding:22px 18px 18px;
+  display:flex;flex-direction:column;align-items:center;
+  min-height:min(82vh,560px);
+}
+.bigcard .glyph{font-size:62px;line-height:1;margin-bottom:.15em}
+.bigcard .name{
+  font-weight:bold;font-size:22px;letter-spacing:.06em;
+  text-align:center;line-height:1.2;margin-bottom:.7em;
+}
+.bigcard .desc{font-size:15px;line-height:1.65;text-align:left;width:100%;margin-bottom:1.1em}
+.bigcard .desc em{font-style:italic}
+.bigcard .stats{
+  font-weight:bold;font-size:13px;line-height:1.6;
+  text-align:center;letter-spacing:.02em;
+}
+.bigcard .spacer{flex:1;min-height:14px}
+.cardbtns{display:flex;gap:10px;width:100%;margin-top:14px}
+
+/* black buttons with the cyan offset shadow */
+.btn{
+  font-family:var(--type);font-weight:bold;font-size:15px;
+  background:var(--ink);color:#fff;border:0;border-radius:0;
+  padding:16px 10px;cursor:pointer;
+  box-shadow:5px 5px 0 var(--shadow);
+  -webkit-appearance:none;letter-spacing:.06em;
+}
+.btn:hover{background:var(--crimson)}
+.btn:focus-visible{outline:3px solid var(--crimson);outline-offset:3px}
+.btn.wide{flex:1}
+.btn.arrow{width:64px;font-size:18px}
+
+/* tint any emoji into a flat silhouette in the item's own colour */
+.glyph,.head-emoji{
+  font-family:var(--type);color:transparent;
+  text-shadow:0 0 0 var(--c,#000),0 0 0 var(--c,#000);
+  text-align:center;
+}
+
+/* =================================================================
+   6. CLUES
+   ================================================================= */
+.clue-header{
+  font-weight:bold;text-decoration:underline;text-align:center;
+  margin:2.4em 0 .6em;color:var(--crimson);letter-spacing:.08em;
+}
+#clues{
+  list-style:none;margin:0;padding:1.1em 1.3em;
+  border:6px solid var(--ink);border-radius:9px;
+  background:var(--manilla);box-shadow:5px 5px 0 var(--shadow);
+}
+#clues li{
+  display:flex;gap:.55em;cursor:pointer;
+  margin-bottom:1em;font-size:97%;line-height:1.45;font-weight:bold;
+}
+#clues li:last-child{margin-bottom:0}
+#clues li.body{color:var(--crimson)}
+#clues li .n{min-width:.9em}
+#clues li.used{opacity:.35;text-decoration:line-through}
+
+/* =================================================================
+   7. DEDUCTION GRID
+   ================================================================= */
+.instructions{color:var(--crimson);font-style:italic;font-size:88%;text-align:center;line-height:1.4;margin-bottom:1em}
+#grid-wrap{overflow-x:auto;padding-bottom:4px}
+table#grid{border-collapse:collapse;margin:0 auto;table-layout:fixed}
+table#grid td,table#grid th{border:2px solid var(--ink);padding:0;background:var(--paper)}
+table#grid .blank,table#grid .axis,table#grid .axis-v{border:0;background:transparent}
+table#grid .axis{
+  color:var(--grey);font-size:10px;font-weight:normal;
+  letter-spacing:.14em;text-align:center;padding:0 0 4px;
+}
+table#grid .axis-v span{
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  display:inline-block;color:var(--grey);font-size:10px;
+  letter-spacing:.14em;font-weight:normal;
+}
+table#grid .axis-v{width:16px;padding-right:3px}
+table#grid th.head{width:2.4em;height:2.4em;font-weight:normal;cursor:pointer;border:0;background:transparent}
+table#grid th.head:hover .head-emoji{transform:translateY(-2px)}
+table#grid th.head .head-emoji{transition:transform .12s}
+table#grid th.head:focus-visible{outline:3px solid var(--crimson);outline-offset:-3px}
+table#grid th.head .head-emoji{font-size:19px;line-height:1;display:block}
+table#grid td.cell{
+  width:2.4em;height:2.4em;cursor:pointer;
+  user-select:none;-webkit-user-select:none;position:relative;
+}
+table#grid td.cell svg{width:74%;height:74%;display:block;margin:auto}
+/* crosses the grid worked out for you, rather than ones you placed */
+table#grid td.cell.auto svg{opacity:.42}
+table#grid td.cell:active{transform:scale(.9)}
+table#grid td.cell:focus-visible{outline:3px solid var(--crimson);outline-offset:-3px}
+table#grid .bt{border-top-width:4px}
+table#grid .bb{border-bottom-width:4px}
+table#grid .bl{border-left-width:4px}
+table#grid .br{border-right-width:4px}
+
+.tools{text-align:center;margin-top:.9em}
+.tools button{
+  font-family:var(--type);font-size:20px;line-height:1;
+  background:transparent;border:0;cursor:pointer;
+  padding:6px 10px;
+}
+.tools button:hover{transform:translateY(-2px)}
+.tools button:focus-visible{outline:3px solid var(--crimson)}
+
+/* =================================================================
+   8. ACCUSATION
+   ================================================================= */
+#accusation{margin-top:2.6em}
+#accusation p{margin-bottom:.6em}
+.pick{margin-bottom:.9em}
+select{
+  height:3em;width:100%;
+  font-family:var(--type);font-weight:bold;font-size:100%;
+  border:3px solid var(--ink);border-radius:0;
+  text-align:center;background:#f5f5f5;color:var(--ink);
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+}
+select:focus-visible{outline:3px solid var(--crimson);outline-offset:2px}
+#submit{width:100%;padding:20px 10px;font-size:16px;margin-top:.4em}
+#guess-reply{color:var(--crimson);min-height:1.7em}
+
+/* =================================================================
+   9. RESOLUTION
+   ================================================================= */
+#verdict{display:none;margin-top:2.4em}
+#verdict.show{display:block}
+.res-header{
+  color:var(--crimson);font-weight:bold;text-align:center;
+  font-size:170%;letter-spacing:.04em;margin:0 0 .8em;
+}
+.res-quote{color:var(--crimson);font-weight:bold;margin-bottom:1.2em;line-height:1.55}
+.res-quote .said{font-weight:normal}
+.res-cards{text-align:center;font-size:0;margin-bottom:1.4em}
+.res-card{
+  display:inline-block;vertical-align:top;
+  width:118px;height:180px;margin:6px;
+  background:var(--card);border:6px solid var(--ink);border-radius:4px;
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.res-card svg{width:56px;height:56px;margin-bottom:14px}
+.res-card .lab{font-family:var(--type);font-weight:bold;font-size:12px;letter-spacing:.06em}
+.res-body p{color:var(--crimson);margin:0 0 .9em;line-height:1.6}
+.res-body p:last-child{margin-bottom:0}
+
+/* =================================================================
+   10. ODDS AND ENDS
+   ================================================================= */
+#configwarn{border:3px solid var(--crimson);color:var(--crimson);padding:.8em 1em;margin-bottom:1.5em;font-size:85%}
+#configwarn[hidden]{display:none}
+
+@media only screen and (max-width:600px){
+  body{font-size:16px}
+  .back{width:124px;height:184px;margin:6px}
+  table#grid th.head,table#grid td.cell{width:2.05em;height:2.05em}
+  .res-card{width:96px;height:150px}
+  .res-card svg{width:44px;height:44px}
+}
+@media print{
+  .tools,#accusation,#verdict,#overlay{display:none}
+  body{background:#fff}
+  #clues{box-shadow:none}
+  #layout{display:block;max-width:none}
+  #gridcol{position:static;width:auto;max-width:none;margin:1.5em 0 0;break-inside:avoid}
+}
+@media(prefers-reduced-motion:reduce){
+  .back,.tools button{transition:none}
+  .back:hover,.tools button:hover,table#grid td.cell:active{transform:none}
+}
+</style>
+</head>
+
+<body>
+<div id="layout">
+
+  <div class="col maintop">
+
+    <div id="configwarn" hidden></div>
+
+    <div id="logo"><span class="word" id="logoWord">BIRTHDLE</span><svg class="hat" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 10 L76 76 L24 76 Z" fill="#000"/><path d="M16 76 Q50 64 84 76 Q50 90 16 76 Z" fill="#000"/><circle cx="50" cy="11" r="10" fill="#000"/></svg></div>
+    <p id="byline"></p>
+
+    <div id="title-head"></div>
+    <p id="dateline"></p>
+
+    <div id="intro"></div>
+
+    <div id="decks">
+      <div class="tray" id="tray"></div>
+      <p class="deck-tabs" id="deckTabs"></p>
+    </div>
+    <p id="deckRule"></p>
+
+    <p id="cluesLead"></p>
+
+    <p class="clue-header">CLUES &amp; EVIDENCE</p>
+    <ol id="clues"></ol>
+
+  </div>
+
+  <aside id="gridcol">
+    <div id="grid-wrap"><table id="grid"></table></div>
+    <div class="tools">
+      <button type="button" id="clearGrid" title="Clear the grid" aria-label="Clear the grid">🗑️</button>
+      <button type="button" id="hintBtn" title="Get a hint" aria-label="Get a hint">💡</button>
+      <button type="button" id="printIt" title="Print" aria-label="Print">🖨️</button>
+    </div>
+    <p class="instructions" id="hintText"></p>
+  </aside>
+
+  <div class="col mainbottom">
+
+    <div id="accusation">
+      <p class="clue-header">THE ACCUSATION</p>
+      <p id="accuseLine"></p>
+      <div id="picks"></div>
+      <button type="button" class="btn" id="submit">MAKE THE ACCUSATION</button>
+      <p id="guess-reply"></p>
+    </div>
+
+    <div id="verdict">
+      <p id="accusePreamble"></p>
+      <p class="res-header">RESOLUTION</p>
+      <p class="res-quote" id="resQuote"></p>
+      <div class="res-cards" id="resCards"></div>
+      <div class="res-body" id="resBody"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- full-screen card view -->
+<div id="overlay" role="dialog" aria-modal="true" aria-label="Case card">
+  <div class="bigcard" id="bigcard"></div>
+</div>
+
+<script>
+/* ===================================================================
+   11. THE PUZZLE — the only part you need to edit
+   ===================================================================
+   • Three categories, same number of items in each. Three each is the
+     sweet spot; four makes it properly hard.
+   • "solution" names must match item names letter for letter, or a red
+     warning box appears at the top of the page.
+   • Give the first category's items a colour each. Objects and places
+     look best left black.
+   • In "desc" you can use *italics* for titles.
+   =================================================================== */
+
+const PUZZLE = {
+
+  logoWord: "BIRTHDLE",
+  byline: "Mystery Puzzles by P Malpani",
+  bylineName: "P Malpani",
+  bylineUrl: "/#/me",
+  dateline: "BIRTHDLE FOR NAVYA",
+
+  caseTitle: "THE STABBING OF THE BIRTHDAY CAKE",
+
+  /* swap this name and it changes everywhere it appears */
+  detective: "Detective Logico",
+
+  intro: [
+    "**Detective Logico** received a message, at **12:02 p.m.** He recognized the handwriting instantly, it was from **Inspector Irratino**. It said: *come at once.*",
+    "By the time Logico reached at **12:05 p.m.**, the cake had already suffered multiple cuts. **Nine cuts.** It was lactose-free, egg-free, and, at the time of death, around forty minutes old.",
+    "The building had lost power at **11:40** and got it back at **12:01**. For those **twenty one minutes**, no one could see anything, and everybody was disoriented.",
+    "Upon interviewing the party, he narrowed it down to **four suspects**, and four things unaccounted for. Four doors open."
+  ],
+
+  categories: [
+    {
+      label: "SUSPECTS",
+      items: [
+        { glyph:"\ud83d\udc69", name:"NAVYA", color:"#967BB6",
+          desc:"It is her birthday, and the cake was hers. Is lactose intolerant. Last seen stressing about the party having taken a bad turn.",
+          stats:["5'1\"","RIGHT-HANDED","BROWN HAIR"] },
+        { glyph:"\ud83e\ude92", name:"WAXING AUNTY", color:"#FF66CC",
+          desc:"At daggers drawn with birthdays generally, and tonight with the birthday girl in particular.",
+          stats:["5'0\"","RIGHT-HANDED","BLACK HAIR"] },
+        { glyph:"\ud83c\udf00", name:"AN OLD COOLER", color:"#66B447",
+          desc:"Recently retired. Some say fired, by the birthday girl. Served faithfully for most of its life. Last seen running out of water.",
+          stats:["3'4\"","AT LEAST TWO SUMMERS","BLACK AND WHITE"] },
+        { glyph:"\ud83d\udd75\ufe0f", name:"VIDYA BALAN", color:"#48A9A6",
+          desc:"Straight up Vidya Balan, from *Kahaani*.",
+          stats:["5'5\"","LEFT-HANDED","BLACK HAIR"] }
+      ]
+    },
+    {
+      label: "WEAPONS",
+      items: [
+        { glyph:"\ud83d\udd8a\ufe0f", name:"A COOL PEN", color:"#000",
+          desc:"Indescribably cool.",
+          stats:["LIGHT","METAL"] },
+        { glyph:"\ud83e\uddc0", name:"A BLOCK OF CHEESE", color:"#000",
+          desc:"Processed and imported. Somebody brought it. Nobody will say who.",
+          stats:["MEDIUM WEIGHT","LACTOSE"] },
+        { glyph:"\ud83d\udd0c", name:"A SEMICONDUCTOR", color:"#000",
+          desc:"Yanked out of something that will definitely not be turning on tomorrow. Sharp on one edge, cleaved clean along the (110).",
+          stats:["LIGHT","SILICON"] },
+        { glyph:"\ud83e\udd6b", name:"A BUZZ BALL", color:"#000",
+          desc:"Four drunk, one missing, and one wiped clean in a hurry.",
+          stats:["LIGHT","ALCOHOL AND BUZZ"] }
+      ]
+    },
+    {
+      label: "LOCATIONS",
+      items: [
+        { glyph:"\ud83c\udf73", name:"THE KITCHEN", color:"#000",
+          desc:"Everything in its place. Suspiciously so.",
+          stats:["INDOORS"] },
+        { glyph:"\ud83d\udeaa", name:"THE HALL", color:"#000",
+          desc:"The place of all the action. Everyone was here at some point.",
+          stats:["INDOORS"] },
+        { glyph:"\ud83d\udecf\ufe0f", name:"THE ROOM", color:"#000",
+          desc:"Squeaky clean. Perhaps wiped of evidence.",
+          stats:["INDOORS"] },
+        { glyph:"\ud83c\udf07", name:"THE BALCONY", color:"#000",
+          desc:"Good view, but now is not the time.",
+          stats:["OUTDOORS"] }
+      ]
+    }
+  ],
+
+  /* Brute-force verified: exactly one arrangement satisfies all eight,
+     and dropping any single clue leaves between 2 and 22 possibilities. */
+  clues: [
+    "Navya was not seen in the room.",
+    "Nobody with brown hair was carrying lactose.",
+    "A medium-weight weapon was found in the hall.",
+    "Vidya Balan was never in the hall.",
+    "Nothing metal was found in Vidya Balan\u2019s hands.",
+    "The suspect in the hall stood taller than the suspect on the balcony.",
+    "Whoever held the lactose stood taller than whoever held the silicon."
+  ],
+
+  /* Always rendered last, in crimson. This one does not constrain the
+     grid: it tells the player which room the answer is in. */
+  bodyClue: "The cake was found out on the balcony.",
+
+  hint: "One clue puts a weapon in a room outright. Start there, then work out who could have been standing next to it.",
+
+  solution: { 0:"AN OLD COOLER", 1:"A SEMICONDUCTOR", 2:"THE BALCONY" },
+
+  deckRule: "Each suspect brought one weapon to one room, but only one of them was a stabber (tonight).",
+  cluesLead: "Unlike Inspector Irratino, who always started with what he didn\u2019t know, **Detective Logico began with what he knew for sure:**",
+  accusePreamble: "Then Detective Logico gathered everybody into one room and made them listen to his elaborate reasoning, before he finally got to the part where he announced whodunnit:",
+
+  accuseLine: "So. Who did it, with what, and in which room?",
+
+  quote: "It was {who} with {what} in {where}!",
+  quoteTail: "Detective Logico declared.",
+
+  win: [
+    "**An old cooler** had been regularly in the balcony, ever since it was retired. Retired was a generous word for what happened. **It was fired**, after years of service.",
+    "At **11:40** the power went. At **11:41** the cake was carried out to the balcony. The cake tried to shout, but it realized it didn\u2019t have a mouth. Or thoughts. The rest took **a semiconductor** and about ninety seconds.",
+    "**An old cooler** has not confessed. It cannot. But when the power came back, it was humming away satisfied, entirely unbothered.",
+    "**Inspector Irratino** says this proves everything he has ever said about appliances. **Detective Logico** has asked him, twice, to stop talking.",
+    "Happy birthday, **Navya** :). **Nine slices survived. All of them are yours.**"
+  ],
+
+  lose: [
+    "That arrangement gets past some of the evidence and not the rest. Somewhere in the grid, two things you have marked cannot both be true.",
+    "The cake is beyond saving either way. Go back and find the clue you have argued with."
+  ]
+};
+
+/* ===================================================================
+   12. THE MACHINERY — no need to touch anything below here
+   =================================================================== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const TICK = c => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L20 6.5" fill="none" stroke="${c}" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const CROSS = c => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="${c}" stroke-width="4.2" stroke-linecap="round"/></svg>`;
+const MAGNIFIER = `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="57" cy="44" r="27" fill="#fffdf5"/><line x1="38" y1="61" x2="25" y2="74" stroke="#fffdf5" stroke-width="17" stroke-linecap="round"/></svg>`;
+
+$('logoWord').textContent = PUZZLE.logoWord;
+document.title = PUZZLE.logoWord;
+$('dateline').textContent = PUZZLE.dateline;
+
+/* byline, with the name picked out in crimson and optionally linked */
+(function(){
+  const line = esc(PUZZLE.byline || '');
+  const nm = PUZZLE.bylineName;
+  if (!line){ $('byline').style.display = 'none'; return; }
+  let html = line;
+  if (nm && line.includes(nm)){
+    const tag = PUZZLE.bylineUrl
+      ? `<a href="${esc(PUZZLE.bylineUrl)}">${esc(nm)}</a>`
+      : `<span class="nm">${esc(nm)}</span>`;
+    html = line.replace(esc(nm), tag);
+  }
+  $('byline').innerHTML = html;
+})();
+
+/* size the wordmark so it fills the column, whatever word you put in it */
+(function(){
+  const box = $('logo'), word = $('logoWord');
+  function fit(){
+    box.style.setProperty('--ls','100px');
+    const natural = word.getBoundingClientRect().width;
+    const avail = box.clientWidth;
+    if (!natural || !avail) return;
+    // at 100px the hat adds 62px and overlaps by 50px, so 12px net
+    const size = 100 * (avail * 0.96) / (natural + 12);
+    box.style.setProperty('--ls', Math.max(34, Math.min(170, size)) + 'px');
+  }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  addEventListener('resize', fit);
+})();
+
+$('title-head').textContent = PUZZLE.caseTitle;
+$('accuseLine').textContent = PUZZLE.accuseLine;
+
+/* --- config sanity check --- */
+(function(){
+  const bad = [];
+  const counts = PUZZLE.categories.map(c => c.items.length);
+  if (new Set(counts).size > 1)
+    bad.push("Every category needs the same number of items. Right now: " + counts.join(", ") + ".");
+  PUZZLE.categories.forEach((cat,i) => {
+    if (!cat.items.some(it => it.name === PUZZLE.solution[i]))
+      bad.push('solution[' + i + '] is "' + PUZZLE.solution[i] + '", which is not an item in ' + cat.label + '.');
+  });
+  if (bad.length){
+    $('configwarn').innerHTML = "<strong>Check your puzzle setup:</strong><ul>" +
+      bad.map(b => `<li>${esc(b)}</li>`).join('') + "</ul>";
+    $('configwarn').hidden = false;
+  }
+})();
+
+/* --- narrative, with names tinted in their own colour --- */
+function paint(text){
+  return esc(text)
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>');
+}
+$('intro').innerHTML = PUZZLE.intro.map(p => `<p>${paint(p)}</p>`).join('');
+$('deckRule').innerHTML   = paint(PUZZLE.deckRule || '');
+$('cluesLead').innerHTML  = paint(PUZZLE.cluesLead || '');
+$('accusePreamble').innerHTML = paint(PUZZLE.accusePreamble || '');
+
+/* --- the deck: one category at a time, switched by the tabs below --- */
+let activeCat = 0;
+
+function renderDeck(){
+  const cat = PUZZLE.categories[activeCat];
+  $('tray').innerHTML = cat.items.map((it,ii) =>
+    `<button type="button" class="back" data-c="${activeCat}" data-i="${ii}"
+             aria-label="Open card ${ii+1} of ${esc(cat.label)}">${MAGNIFIER}</button>`
+  ).join('');
+  $('deckTabs').innerHTML = PUZZLE.categories.map((c,i) =>
+    `<a role="button" tabindex="0" class="tab${i===activeCat?' on':''}" data-t="${i}"
+        aria-pressed="${i===activeCat}">${esc(c.label)}</a>`
+  ).join('<span class="dot">&bull;</span>');
+}
+renderDeck();
+
+function switchTo(i){
+  if (i === activeCat) return;
+  activeCat = i;
+  renderDeck();
+}
+$('deckTabs').addEventListener('click', e => {
+  const t = e.target.closest('a[data-t]');
+  if (t){ e.preventDefault(); switchTo(+t.dataset.t); }
+});
+$('deckTabs').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' '){
+    const t = e.target.closest('a[data-t]');
+    if (t){ e.preventDefault(); switchTo(+t.dataset.t); }
+  }
+});
+
+/* --- the open card --- */
+let open = null;
+let opener = null;          // what opened the card, so focus can return there
+function showCard(ci,ii,from){
+  const cat = PUZZLE.categories[ci], it = cat.items[ii];
+  open = {ci,ii};
+  if (from) opener = from;
+  const desc = esc(it.desc || '').replace(/\*([^*]+)\*/g,'<em>$1</em>');
+  $('bigcard').innerHTML = `
+    <span class="glyph" style="--c:${it.color}">${esc(it.glyph)}</span>
+    <div class="name" style="color:${it.color}">${esc(it.name)}</div>
+    <div class="desc">${desc}</div>
+    <div class="stats">${(it.stats||[]).map(esc).join(' &bull; ')}</div>
+    <div class="spacer"></div>
+    <div class="cardbtns">
+      <button type="button" class="btn wide" id="setdown">SET CARD DOWN</button>
+      <button type="button" class="btn arrow" id="nextcard" aria-label="Next card">&#8594;</button>
+    </div>`;
+  $('overlay').classList.add('show');
+  document.body.classList.add('locked');
+  $('setdown').focus();
+  $('setdown').onclick = closeCard;
+  $('nextcard').onclick = () => showCard(ci, (ii+1) % cat.items.length);
+}
+function closeCard(){
+  $('overlay').classList.remove('show');
+  document.body.classList.remove('locked');
+  if (opener && document.contains(opener)) opener.focus();
+  open = null; opener = null;
+}
+$('decks').addEventListener('click', e => {
+  const b = e.target.closest('.back');
+  if (b) showCard(+b.dataset.c, +b.dataset.i, b);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && open) closeCard();
+});
+
+/* --- clues --- */
+$('clues').innerHTML = PUZZLE.clues.map(c =>
+  `<li tabindex="0"><span class="n">&bull;</span><span>${esc(c)}</span></li>`).join('')
+  + (PUZZLE.bodyClue
+      ? `<li tabindex="0" class="body"><span class="n">&bull;</span><span>${esc(PUZZLE.bodyClue)}</span></li>`
+      : '');
+$('clues').addEventListener('click', e => {
+  const li = e.target.closest('li'); if (li) li.classList.toggle('used');
+});
+$('clues').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' '){
+    const li = e.target.closest('li');
+    if (li){ e.preventDefault(); li.classList.toggle('used'); }
+  }
+});
+
+/* --- deduction grid ---
+      columns: suspects, then locations
+      rows:    weapons,   then locations
+        ( B x A )( B x C )
+        ( C x A )                                      */
+(function(){
+  const [A,B,C] = PUZZLE.categories;
+  const na = A.items.length, nb = B.items.length, nc = C.items.length;
+
+  /* header icons carry their category so tapping one opens that card */
+  const head = (it,ci,ii) =>
+    `<th class="head" data-c="${ci}" data-i="${ii}" tabindex="0" role="button"
+         title="${esc(it.name)}" aria-label="Open the ${esc(it.name)} card"><span class="head-emoji" style="--c:${it.color}" aria-hidden="true">${esc(it.glyph)}</span></th>`;
+  /* block = which of the three n x n grids this cell belongs to.
+     Eliminations only ever travel inside one block, because each block
+     is its own one-to-one relation. */
+  const cell = (label,cls,block,r,c) =>
+    `<td class="cell ${cls}" data-v="0" data-block="${block}" data-r="${r}" data-c="${c}"` +
+    ` tabindex="0" role="button" aria-label="${esc(label)}"></td>`;
+
+  let h = '';
+  // top axis labels
+  h += `<tr><td class="blank"></td><td class="blank"></td>` +
+       `<td class="axis" colspan="${na}">${esc(A.label)}</td>` +
+       `<td class="axis" colspan="${nc}">${esc(C.label)}</td></tr>`;
+  // icon header row
+  h += `<tr><td class="blank"></td><td class="blank"></td>` +
+       A.items.map((a,j) => head(a,0,j)).join('') +
+       C.items.map((c,j) => head(c,2,j)).join('') + `</tr>`;
+
+  // block rows: weapons
+  B.items.forEach((b,i) => {
+    h += '<tr>';
+    if (i === 0) h += `<th class="axis-v" rowspan="${nb}"><span>${esc(B.label)}</span></th>`;
+    h += head(b,1,i);
+    A.items.forEach((a,j) => { h += cell(a.name+' with '+b.name,
+      [i===0?'bt':'', i===nb-1?'bb':'', j===0?'bl':'', j===na-1?'br':''].join(' '), 'WA', i, j); });
+    C.items.forEach((c,j) => { h += cell(b.name+' in '+c.name,
+      [i===0?'bt':'', i===nb-1?'bb':'', j===0?'bl':'', j===nc-1?'br':''].join(' '), 'WC', i, j); });
+    h += '</tr>';
+  });
+
+  // block rows: locations
+  C.items.forEach((c,i) => {
+    h += '<tr>';
+    if (i === 0) h += `<th class="axis-v" rowspan="${nc}"><span>${esc(C.label)}</span></th>`;
+    h += head(c,2,i);
+    A.items.forEach((a,j) => { h += cell(a.name+' in '+c.name,
+      [i===0?'bt':'', i===nc-1?'bb':'', j===0?'bl':'', j===na-1?'br':''].join(' '), 'CA', i, j); });
+    h += `<td class="blank" colspan="${nc}"></td></tr>`;
+  });
+
+  $('grid').innerHTML = h;
+})();
+
+/* --- marks and automatic elimination ---
+   Ticking a square says "these two go together", which rules out every
+   other square in that square's row and column WITHIN ITS OWN BLOCK.
+   Those crosses are drawn faintly and marked data-auto, so that undoing
+   the tick takes them back off again. A cross you place yourself is
+   solid and never gets cleared automatically. */
+
+const CELLS = [...document.querySelectorAll('#grid td.cell')];
+
+function paintCell(td){
+  const v = Number(td.dataset.v);
+  const auto = td.dataset.auto === '1';
+  td.innerHTML = v === 1 ? TICK('var(--tick)')
+               : v === 2 ? CROSS('var(--cross)')
+               : '';
+  td.classList.toggle('auto', v === 2 && auto);
+}
+
+function refresh(){
+  // 1. drop any auto cross that no longer has a tick justifying it
+  CELLS.forEach(td => {
+    if (td.dataset.auto !== '1') return;
+    const supported = CELLS.some(o =>
+      o !== td && Number(o.dataset.v) === 1 &&
+      o.dataset.block === td.dataset.block &&
+      (o.dataset.r === td.dataset.r || o.dataset.c === td.dataset.c));
+    if (!supported){ td.dataset.v = 0; td.dataset.auto = '0'; }
+  });
+
+  // 2. from every tick, cross out the rest of its row and column
+  CELLS.filter(td => Number(td.dataset.v) === 1).forEach(tick => {
+    CELLS.forEach(td => {
+      if (td === tick) return;
+      if (td.dataset.block !== tick.dataset.block) return;
+      if (td.dataset.r !== tick.dataset.r && td.dataset.c !== tick.dataset.c) return;
+      if (Number(td.dataset.v) === 0){ td.dataset.v = 2; td.dataset.auto = '1'; }
+    });
+  });
+
+  CELLS.forEach(paintCell);
+}
+
+function cycle(td){
+  td.dataset.v = (Number(td.dataset.v) + 1) % 3;
+  td.dataset.auto = '0';          // touching a square makes it yours
+  refresh();
+}
+
+$('grid').addEventListener('click', e => {
+  const th = e.target.closest('th.head');
+  if (th){ showCard(+th.dataset.c, +th.dataset.i, th); return; }
+  const td = e.target.closest('td.cell'); if (td) cycle(td);
+});
+$('grid').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' '){
+    const th = e.target.closest('th.head');
+    if (th){ e.preventDefault(); showCard(+th.dataset.c, +th.dataset.i, th); return; }
+    const td = e.target.closest('td.cell');
+    if (td){ e.preventDefault(); cycle(td); }
+  }
+});
+$('clearGrid').addEventListener('click', () => {
+  CELLS.forEach(td => { td.dataset.v = 0; td.dataset.auto = '0'; td.innerHTML = ''; td.classList.remove('auto'); });
+});
+$('printIt').addEventListener('click', () => window.print());
+$('hintBtn').addEventListener('click', () => {
+  $('hintText').textContent = PUZZLE.hint || '';
+});
+
+/* --- accusation --- */
+$('picks').innerHTML = PUZZLE.categories.map((cat,i) => `
+  <div class="pick">
+    <select id="pick${i}" aria-label="${esc(cat.label)}">
+      <option value="">${esc(cat.label)}</option>
+      ${cat.items.map(it => `<option value="${esc(it.name)}">${esc(it.name)}</option>`).join('')}
+    </select>
+  </div>`).join('');
+
+const RES_LABELS = PUZZLE.categories.map(c => c.label.replace(/S$/,''));
+
+$('submit').addEventListener('click', () => {
+  const chosen = PUZZLE.categories.map((_,i) => $('pick'+i).value);
+
+  if (chosen.some(c => !c)){
+    $('guess-reply').textContent = "Pick one from each list first.";
+    $('verdict').classList.remove('show');
+    return;
+  }
+  $('guess-reply').textContent = '';
+
+  const marks = chosen.map((c,i) => c === PUZZLE.solution[i]);
+  const right = marks.every(Boolean);
+
+  const q = PUZZLE.quote
+    .replace('{who}',  chosen[0])
+    .replace('{what}', chosen[1])
+    .replace('{where}',chosen[2]);
+  $('resQuote').innerHTML = `&ldquo;${esc(q)}&rdquo; <span class="said">${esc(PUZZLE.quoteTail)}</span>`;
+
+  $('resCards').innerHTML = marks.map((ok,i) => `
+    <div class="res-card">
+      ${ok ? TICK('var(--tick-big)') : CROSS('var(--crimson)')}
+      <span class="lab">${esc(RES_LABELS[i])}</span>
+    </div>`).join('');
+
+  $('resBody').innerHTML = (right ? PUZZLE.win : PUZZLE.lose)
+    .map(p => `<p>${paint(p)}</p>`).join('');
+
+  $('verdict').classList.add('show');
+  $('verdict').scrollIntoView({behavior:'smooth', block:'start'});
+});
+</script>
+</body>
+</html>

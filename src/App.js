@@ -9,6 +9,13 @@ import Stuff from './pages/Stuff';
 import BlogPostPage from "./pages/BlogPostPage";
 import './App.css';
 
+function BirthdayMystery() {
+  useEffect(() => {
+    window.location.replace(`${process.env.PUBLIC_URL || ''}/birthday-mystery.html`);
+  }, []);
+  return null;
+}
+
 function App() {
   const initialState = () => {
     const storedState = localStorage.getItem('thechosen2appState');
@@ -64,6 +71,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/me" element={<Aboutme />} />
           <Route path="/camera" element={<Camera />} />
+          <Route path="/birthday-mystery" element={<BirthdayMystery />} />
           <Route path="/stuff/blog/:slug" element={<BlogPostPage />} />
           {!checkedout && (
             <Route
