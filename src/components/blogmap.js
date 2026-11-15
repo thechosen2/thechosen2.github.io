@@ -66,7 +66,7 @@ const blogMap = {
   },
   repo4: {
     title: "portfolio website↗",
-    snippet: "This here website with a custom .md to react flow",
+    snippet: "how the sausage is made",
     path: "https://github.com/thechosen2/thechosen2.github.io",
   }
 };
